@@ -229,12 +229,10 @@
 
 @layer components {
   .page-container {
-    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+   @apply max-w-7xl mx-auto px-4;
   }
-
   .page-section {
-    @apply page-container py-10 sm:py-12 lg:py-14;
-  }
+@apply py-10;  }
 
   .page-main {
     @apply w-full;
@@ -249,7 +247,7 @@
   }
 
   .surface-card {
-    @apply bg-card border border-border rounded-2xl shadow-sm transition-shadow duration-300;
+   @apply bg-white dark:bg-gray-900 rounded-xl shadow;
   }
 
   .surface-card-hover {
