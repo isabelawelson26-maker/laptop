@@ -19,9 +19,9 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-secondary/30 border-t border-border mt-20">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <footer className="mt-auto border-t border-border bg-muted/30">
+      <div className="page-container py-14 sm:py-16 lg:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
               <SiteBrand size="lg" nameClassName="text-xl" />
@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="font-bold text-foreground">{locale === 'ar' ? 'روابط سريعة' : 'Quick Links'}</h4>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">{locale === 'ar' ? 'روابط سريعة' : 'Quick Links'}</h4>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>

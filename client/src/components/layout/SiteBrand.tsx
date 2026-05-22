@@ -14,9 +14,11 @@ interface SiteBrandProps {
   size?: BrandSize;
   showName?: boolean;
   nameClassName?: string;
+  /** White text for dark backgrounds (e.g. auth panel) */
+  inverted?: boolean;
 }
 
-export default function SiteBrand({ size = 'md', showName = true, nameClassName }: SiteBrandProps) {
+export default function SiteBrand({ size = 'md', showName = true, nameClassName, inverted }: SiteBrandProps) {
   const { siteName, siteLogo } = useSiteSettings();
   const s = sizeMap[size];
 
@@ -37,7 +39,7 @@ export default function SiteBrand({ size = 'md', showName = true, nameClassName 
       {showName && siteName ? (
         <span
           className={cn(
-            'font-black bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent',
+            inverted ? 'font-bold text-white' : 'font-black bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent',
             nameClassName
           )}
         >

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { SlidersHorizontal, ChevronDown, ChevronUp, Search, X } from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
+import { btnSecondary, inputClass, selectClass } from '../lib/ui';
+import { cn } from '../lib/utils';
 import ProductCard from '../components/products/ProductCard';
 import { useLocale } from '../context/LocaleContext';
 import api from '../lib/api';
@@ -51,17 +52,16 @@ export default function ProductsPage() {
   });
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-black text-foreground">
+    <PageShell>
+      <div className="page-section !pt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h1 className="section-title text-2xl sm:text-3xl">
             {offers ? (locale === 'ar' ? 'العروض الخاصة' : 'Special Offers')
               : featured ? (locale === 'ar' ? 'المنتجات المميزة' : 'Featured Products')
               : (locale === 'ar' ? 'جميع المنتجات' : 'All Products')}
           </h1>
           <button onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 border border-border rounded-xl text-sm font-medium hover:bg-accent transition-all">
+            className={cn(btnSecondary, 'btn-sm shrink-0')}>
             <SlidersHorizontal className="w-4 h-4" />
             {locale === 'ar' ? 'فلتر' : 'Filter'}
             {showFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -69,30 +69,30 @@ export default function ProductsPage() {
         </div>
 
         {showFilters && (
-          <div className="bg-card border border-border rounded-2xl p-5 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="surface-card p-5 sm:p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="relative">
               <Search className="absolute top-3 start-3 w-4 h-4 text-muted-foreground" />
               <input
                 value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
                 placeholder={locale === 'ar' ? 'بحث...' : 'Search...'}
-                className="w-full pl-9 pr-3 py-2.5 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className={cn(inputClass, 'ps-9')}
               />
             </div>
             <select value={category} onChange={e => { setCategory(e.target.value); setPage(1); }}
-              className="px-3 py-2.5 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              className={selectClass}>
               <option value="">{locale === 'ar' ? 'كل الأقسام' : 'All Categories'}</option>
               {data?.categories.map(c => (
                 <option key={c.id} value={c.slug}>{locale === 'ar' ? c.nameAr : c.nameEn}</option>
               ))}
             </select>
             <select value={sort} onChange={e => setSort(e.target.value)}
-              className="px-3 py-2.5 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              className={selectClass}>
               <option value="newest">{locale === 'ar' ? 'الأحدث' : 'Newest'}</option>
               <option value="price_asc">{locale === 'ar' ? 'السعر: الأقل أولاً' : 'Price: Low to High'}</option>
               <option value="price_desc">{locale === 'ar' ? 'السعر: الأعلى أولاً' : 'Price: High to Low'}</option>
             </select>
             <select value={brand} onChange={e => { setBrand(e.target.value); setPage(1); }}
-              className="px-3 py-2.5 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              className={selectClass}>
               <option value="">{locale === 'ar' ? 'كل الماركات' : 'All Brands'}</option>
               {data?.brands.map(b => b && <option key={b} value={b}>{b}</option>)}
             </select>
@@ -100,11 +100,11 @@ export default function ProductsPage() {
         )}
 
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="product-grid">
             {[...Array(12)].map((_, i) => <div key={i} className="aspect-square bg-muted rounded-2xl animate-pulse" />)}
           </div>
         ) : data?.products.length === 0 ? (
-          <div className="text-center py-24 space-y-4">
+          <div className="empty-state">
             <p className="text-5xl">🔍</p>
             <h3 className="text-xl font-bold text-foreground">{locale === 'ar' ? 'لا توجد منتجات' : 'No Products Found'}</h3>
             <p className="text-muted-foreground">{locale === 'ar' ? 'حاول تغيير فلاتر البحث' : 'Try adjusting your search filters'}</p>
@@ -114,7 +114,7 @@ export default function ProductsPage() {
             <p className="text-sm text-muted-foreground mb-4">
               {locale === 'ar' ? `${data?.total} منتج` : `${data?.total} products`}
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+            <div className="product-grid">
               {data!.products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
             </div>
             {data && data.totalPages > 1 && (
@@ -132,8 +132,7 @@ export default function ProductsPage() {
             )}
           </>
         )}
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

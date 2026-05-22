@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
+import { btnPrimary } from '../lib/ui';
+import { cn } from '../lib/utils';
 import { useLocale } from '../context/LocaleContext';
 import { useCartStore } from '../lib/store';
 import { formatPrice } from '../lib/utils';
@@ -14,32 +15,29 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <PageShell>
+        <div className="page-section empty-state min-h-[50vh]">
           <ShoppingBag className="w-16 h-16 text-muted-foreground/40" />
           <h2 className="text-xl font-bold">{locale === 'ar' ? 'السلة فارغة' : 'Your cart is empty'}</h2>
           <p className="text-muted-foreground">{locale === 'ar' ? 'أضف منتجات للسلة لمتابعة الشراء' : 'Add products to your cart to continue shopping'}</p>
-          <Link href="/products" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
+          <Link href="/products" className={cn(btnPrimary, 'btn-md')}>
             {locale === 'ar' ? 'تسوق الآن' : 'Shop Now'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
-        <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-8">{locale === 'ar' ? 'سلة التسوق' : 'Shopping Cart'}</h1>
+    <PageShell>
+      <div className="page-section">
+        <h1 className="section-title mb-8">{locale === 'ar' ? 'سلة التسوق' : 'Shopping Cart'}</h1>
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">
             <AnimatePresence>
               {items.map(item => (
                 <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: isRTL ? 100 : -100 }}
-                  className="bg-card border border-border rounded-2xl p-4 flex items-center gap-4">
+                  className="surface-card p-4 flex flex-col sm:flex-row items-center gap-4">
                   <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl border border-border flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-sm text-foreground line-clamp-2">{item.name}</h3>
@@ -84,8 +82,7 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

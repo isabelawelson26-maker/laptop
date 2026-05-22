@@ -4,8 +4,7 @@ import { useLocation, Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { CheckCircle, Wallet, Banknote, Tag, Loader2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
 import { useCartStore } from '../lib/store';
@@ -78,9 +77,8 @@ export default function CheckoutPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 min-h-screen flex items-center justify-center">
+      <PageShell>
+      <div className="page-section">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md space-y-6">
             <div className="w-24 h-24 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle className="w-12 h-12 text-green-600" />
@@ -102,32 +100,28 @@ export default function CheckoutPage() {
               </button>
             </div>
           </motion.div>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <PageShell>
+      <div className="page-section">
           <ShoppingBag className="w-16 h-16 text-muted-foreground/40" />
           <h2 className="text-xl font-bold">{locale === 'ar' ? 'السلة فارغة' : 'Cart is empty'}</h2>
           <Link href="/products" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
             {locale === 'ar' ? 'تسوق الآن' : 'Shop Now'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
+    <PageShell>
+      <div className="page-section">
         <div className="flex items-center gap-3 mb-6">
           <button onClick={() => navigate('/cart')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
@@ -267,8 +261,7 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

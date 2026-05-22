@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { X, Plus, BarChart2 } from 'lucide-react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { formatPrice, cn } from '../lib/utils';
 import api from '../lib/api';
@@ -30,9 +29,8 @@ export default function ComparePage() {
 
   if (productIds.length === 0) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <PageShell>
+      <div className="page-section">
           <BarChart2 className="w-16 h-16 text-muted-foreground/30" />
           <h2 className="text-xl font-bold">{locale === 'ar' ? 'قارن بين المنتجات' : 'Compare Products'}</h2>
           <p className="text-muted-foreground text-sm text-center max-w-sm">
@@ -43,9 +41,8 @@ export default function ComparePage() {
           <Link href="/products" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
             {locale === 'ar' ? 'تصفح المنتجات' : 'Browse Products'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
@@ -61,10 +58,9 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10 overflow-x-auto">
-        <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-8 flex items-center gap-3">
+    <PageShell>
+      <div className="page-section overflow-x-auto">
+        <h1 className="section-title mb-8 flex items-center gap-3">
           <BarChart2 className="w-7 h-7 text-primary" />
           {locale === 'ar' ? 'مقارنة المنتجات' : 'Compare Products'}
         </h1>
@@ -101,8 +97,7 @@ export default function ComparePage() {
             </div>
           ))}
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

@@ -57,7 +57,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+      className="group relative surface-card-hover rounded-2xl overflow-hidden"
     >
       <div className="absolute top-3 start-3 z-10 flex flex-col gap-1.5">
         {product.isFeatured && (
@@ -144,7 +144,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             'w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200',
             isOutOfStock
               ? 'bg-muted text-muted-foreground cursor-not-allowed'
-              : 'bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 shadow-lg shadow-primary/20'
+              : 'btn btn-primary w-full py-2.5 text-sm shadow-lg shadow-[hsl(var(--surface-glow))]'
           )}
         >
           <ShoppingCart className="w-4 h-4" />

@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 import { useMutation } from '@tanstack/react-query';
-import { Laptop, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useLocale } from '../../context/LocaleContext';
 import api from '../../lib/api';
+import AuthLayout from '../../components/layout/AuthLayout';
+import { btnPrimary, inputClass, labelClass } from '../../lib/ui';
+import { cn } from '../../lib/utils';
 
 export default function ResetPasswordPage() {
   const { locale } = useLocale();
-  const [location] = useLocation();
   const token = new URLSearchParams(window.location.search).get('token') || '';
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -29,46 +31,51 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-blue-950 p-4">
-      <div className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl shadow-lg">
-            <Laptop className="w-7 h-7 text-white" />
+    <AuthLayout
+      title={locale === 'ar' ? 'تعيين كلمة مرور جديدة' : 'Set new password'}
+      subtitle={locale === 'ar' ? 'اختر كلمة مرور قوية لحسابك.' : 'Choose a strong password for your account.'}
+    >
+      {done ? (
+        <div className="empty-state py-6">
+          <CheckCircle className="w-14 h-14 text-emerald-500 mb-4" />
+          <p className="font-semibold text-foreground mb-6">{locale === 'ar' ? 'تم تغيير كلمة المرور بنجاح' : 'Password changed successfully'}</p>
+          <Link href="/auth/login" className={cn(btnPrimary, 'w-full btn-lg')}>
+            {locale === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
           </Link>
-          <h1 className="text-2xl font-black text-foreground">{locale === 'ar' ? 'تعيين كلمة مرور جديدة' : 'Set New Password'}</h1>
         </div>
-        {done ? (
-          <div className="text-center space-y-4">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-            <p className="text-foreground font-semibold">{locale === 'ar' ? 'تم تغيير كلمة المرور بنجاح' : 'Password changed successfully'}</p>
-            <Link href="/auth/login" className="block w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold text-center hover:bg-primary/90 transition-all">
-              {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
-            </Link>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className={labelClass}>{locale === 'ar' ? 'كلمة المرور الجديدة' : 'New password'}</label>
+            <div className="relative">
+              <input
+                type={showPass ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                className={cn(inputClass, 'pe-11')}
+              />
+              <button type="button" onClick={() => setShowPass(!showPass)} className="absolute top-1/2 -translate-y-1/2 end-3 text-muted-foreground hover:text-foreground">
+                {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">{locale === 'ar' ? 'كلمة المرور الجديدة' : 'New Password'}</label>
-              <div className="relative">
-                <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 pe-10" />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute top-3 end-3 text-muted-foreground">
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">{locale === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}</label>
-              <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required
-                className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-            <button type="submit" disabled={mutation.isPending}
-              className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-60">
-              {mutation.isPending ? (locale === 'ar' ? 'جاري الحفظ...' : 'Saving...') : (locale === 'ar' ? 'حفظ كلمة المرور' : 'Save Password')}
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+          <div>
+            <label className={labelClass}>{locale === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm password'}</label>
+            <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required className={inputClass} />
+          </div>
+          <button type="submit" disabled={mutation.isPending} className={cn(btnPrimary, 'w-full btn-lg')}>
+            {mutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {locale === 'ar' ? 'جاري الحفظ...' : 'Saving...'}
+              </>
+            ) : (
+              locale === 'ar' ? 'حفظ كلمة المرور' : 'Save password'
+            )}
+          </button>
+        </form>
+      )}
+    </AuthLayout>
   );
 }

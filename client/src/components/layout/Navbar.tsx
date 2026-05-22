@@ -56,10 +56,10 @@ export default function Navbar() {
     <>
       <nav className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled ? 'bg-background/95 backdrop-blur-lg border-b border-border shadow-lg' : 'bg-background/80 backdrop-blur-sm'
+        scrolled ? 'nav-glass-scrolled' : 'nav-glass'
       )}>
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="page-container">
+          <div className="flex items-center justify-between h-16 lg:h-[4.25rem]">
             <Link href="/" className="flex items-center gap-2 flex-shrink-0">
               <SiteBrand size="md" nameClassName="text-xl hidden sm:block" />
             </Link>
@@ -153,7 +153,7 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <Link href="/auth/login" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                <Link href="/auth/login" className="btn btn-primary btn-sm hidden sm:inline-flex">
                   {t('login')}
                 </Link>
               )}
@@ -174,9 +174,9 @@ export default function Navbar() {
                   <input
                     autoFocus value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={locale === 'ar' ? 'ابحث عن منتج...' : 'Search products...'}
-                    className="flex-1 px-4 py-2.5 bg-muted rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/30 text-sm"
+                    className="input-field flex-1 py-2.5"
                   />
-                  <button type="submit" className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-all">
+                  <button type="submit" className={cn('btn btn-primary btn-sm shrink-0')}>
                     {locale === 'ar' ? 'بحث' : 'Search'}
                   </button>
                 </form>
@@ -201,7 +201,7 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </nav>
-      <div className="h-16" />
+      <div className="h-16 lg:h-[4.25rem]" />
     </>
   );
 }

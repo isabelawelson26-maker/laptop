@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { User, Save, Loader2, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation } from 'wouter';
 import api from '../lib/api';
+import { btnPrimary, inputClass, labelClass } from '../lib/ui';
+import { cn } from '../lib/utils';
 
 export default function ProfilePage() {
   const { locale } = useLocale();
@@ -49,81 +50,77 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-          <Link href="/auth/login" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold">
-            {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
+      <PageShell>
+        <div className="empty-state min-h-[50vh]">
+          <p className="text-muted-foreground mb-6">{locale === 'ar' ? 'سجّل الدخول لعرض ملفك الشخصي' : 'Sign in to view your profile'}</p>
+          <Link href="/auth/login" className={cn(btnPrimary, 'btn-md')}>
+            {locale === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
-        <div className="max-w-lg mx-auto">
-          <h1 className="text-2xl font-black text-foreground mb-8 flex items-center gap-3">
-            <User className="w-6 h-6 text-primary" />
-            {locale === 'ar' ? 'الملف الشخصي' : 'My Profile'}
+    <PageShell>
+      <div className="page-section">
+        <div className="max-w-xl mx-auto">
+          <h1 className="section-title text-2xl sm:text-3xl mb-8 flex items-center gap-3">
+            <User className="w-7 h-7 text-primary shrink-0" />
+            {locale === 'ar' ? 'الملف الشخصي' : 'My profile'}
           </h1>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-5">
-            <div className="flex items-center gap-4 pb-5 border-b border-border">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+          <div className="surface-card p-6 sm:p-8 space-y-6">
+            <div className="flex items-center gap-4 pb-6 border-b border-border">
+              <div className="w-16 h-16 sm:w-18 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0">
                 <span className="text-2xl font-bold text-primary">{(name || user?.email || 'U')[0].toUpperCase()}</span>
               </div>
-              <div>
-                <p className="font-bold text-foreground">{name || (locale === 'ar' ? 'المستخدم' : 'User')}</p>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+              <div className="min-w-0">
+                <p className="font-bold text-foreground truncate">{name || (locale === 'ar' ? 'المستخدم' : 'User')}</p>
+                <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
+                <span className={cn(
+                  'badge-pill mt-2',
+                  user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                )}>
                   {user?.role === 'SUPER_ADMIN' ? (locale === 'ar' ? 'مدير عام' : 'Super Admin') : user?.role === 'ADMIN' ? (locale === 'ar' ? 'مدير' : 'Admin') : (locale === 'ar' ? 'عميل' : 'Customer')}
                 </span>
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium">{locale === 'ar' ? 'الاسم الكامل' : 'Full Name'}</label>
-                <input value={name} onChange={e => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <div>
+                <label className={labelClass}>{locale === 'ar' ? 'الاسم الكامل' : 'Full name'}</label>
+                <input value={name} onChange={e => setName(e.target.value)} className={inputClass} />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium">{locale === 'ar' ? 'رقم الهاتف' : 'Phone'}</label>
-                <input value={phone} onChange={e => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <div>
+                <label className={labelClass}>{locale === 'ar' ? 'رقم الهاتف' : 'Phone'}</label>
+                <input value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium">{locale === 'ar' ? 'العنوان' : 'Address'}</label>
-                <input value={address} onChange={e => setAddress(e.target.value)}
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              <div>
+                <label className={labelClass}>{locale === 'ar' ? 'العنوان' : 'Address'}</label>
+                <input value={address} onChange={e => setAddress(e.target.value)} className={inputClass} />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium">{locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}</label>
-                <input value={user?.email || ''} disabled
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm text-muted-foreground cursor-not-allowed" />
+              <div>
+                <label className={labelClass}>{locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}</label>
+                <input value={user?.email || ''} disabled className={cn(inputClass, 'opacity-70 cursor-not-allowed')} />
               </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button onClick={() => mutation.mutate()} disabled={mutation.isPending}
-                className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-60">
+                className={cn(btnPrimary, 'flex-1 btn-md')}>
                 {mutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                {locale === 'ar' ? 'حفظ التغييرات' : 'Save Changes'}
+                {locale === 'ar' ? 'حفظ التغييرات' : 'Save changes'}
               </button>
               <button onClick={() => { logout(); navigate('/'); }}
-                className="flex items-center gap-2 px-4 py-3 border border-destructive/30 text-destructive rounded-xl font-semibold hover:bg-destructive/10 transition-all">
+                className="btn btn-md border border-destructive/30 text-destructive hover:bg-destructive/10 px-5">
                 <LogOut className="w-4 h-4" />
                 {locale === 'ar' ? 'خروج' : 'Logout'}
               </button>
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

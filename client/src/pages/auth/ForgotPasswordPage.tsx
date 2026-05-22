@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
 import { useMutation } from '@tanstack/react-query';
-import { Laptop } from 'lucide-react';
+import { Loader2, MailCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useLocale } from '../../context/LocaleContext';
 import api from '../../lib/api';
+import AuthLayout from '../../components/layout/AuthLayout';
+import { btnPrimary, inputClass, labelClass } from '../../lib/ui';
+import { cn } from '../../lib/utils';
 
 export default function ForgotPasswordPage() {
   const { locale } = useLocale();
@@ -18,39 +21,51 @@ export default function ForgotPasswordPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-blue-950 p-4">
-      <div className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl shadow-lg">
-            <Laptop className="w-7 h-7 text-white" />
-          </Link>
-          <h1 className="text-2xl font-black text-foreground">{locale === 'ar' ? 'نسيت كلمة المرور' : 'Forgot Password'}</h1>
-          <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'سنرسل لك رابط لاسترداد كلمة المرور' : "We'll send you a password reset link"}</p>
-        </div>
-        {sent ? (
-          <div className="text-center space-y-4">
-            <p className="text-5xl">📬</p>
-            <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'تم إرسال رابط الاسترداد إلى بريدك الإلكتروني' : 'Reset link sent to your email'}</p>
-          </div>
-        ) : (
-          <form onSubmit={e => { e.preventDefault(); mutation.mutate(); }} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">{locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
-                className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
-            </div>
-            <button type="submit" disabled={mutation.isPending}
-              className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-60">
-              {mutation.isPending ? (locale === 'ar' ? 'جاري الإرسال...' : 'Sending...') : (locale === 'ar' ? 'إرسال رابط الاسترداد' : 'Send Reset Link')}
-            </button>
-          </form>
-        )}
+    <AuthLayout
+      title={locale === 'ar' ? 'نسيت كلمة المرور' : 'Forgot password'}
+      subtitle={locale === 'ar' ? 'أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.' : "Enter your email and we'll send you a reset link."}
+      footer={
         <p className="text-center text-sm">
           <Link href="/auth/login" className="text-primary font-semibold hover:underline">
-            {locale === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to Sign In'}
+            {locale === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to sign in'}
           </Link>
         </p>
-      </div>
-    </div>
+      }
+    >
+      {sent ? (
+        <div className="empty-state py-8">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+            <MailCheck className="w-8 h-8 text-primary" />
+          </div>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+            {locale === 'ar' ? 'تم إرسال رابط الاسترداد إلى بريدك الإلكتروني إن كان مسجلاً.' : 'If your email is registered, a reset link has been sent.'}
+          </p>
+        </div>
+      ) : (
+        <form onSubmit={e => { e.preventDefault(); mutation.mutate(); }} className="space-y-5">
+          <div>
+            <label className={labelClass}>{locale === 'ar' ? 'البريد الإلكتروني' : 'Email'}</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              className={inputClass}
+            />
+          </div>
+          <button type="submit" disabled={mutation.isPending} className={cn(btnPrimary, 'w-full btn-lg')}>
+            {mutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {locale === 'ar' ? 'جاري الإرسال...' : 'Sending...'}
+              </>
+            ) : (
+              locale === 'ar' ? 'إرسال رابط الاسترداد' : 'Send reset link'
+            )}
+          </button>
+        </form>
+      )}
+    </AuthLayout>
   );
 }

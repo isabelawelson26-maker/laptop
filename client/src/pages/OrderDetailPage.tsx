@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useLocation } from 'wouter';
 import { Package, Clock, CheckCircle, Truck, XCircle, AlertCircle, ArrowLeft, MapPin, CreditCard, MessageSquare, Image } from 'lucide-react';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice, formatDate, cn } from '../lib/utils';
@@ -32,17 +31,15 @@ export default function OrderDetailPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 text-center">
+      <PageShell>
+      <div className="page-section">
           <p className="text-muted-foreground mb-4">{locale === 'ar' ? 'يرجى تسجيل الدخول أولاً' : 'Please login first'}</p>
           <button onClick={() => navigate('/auth/login')}
             className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
             {locale === 'ar' ? 'تسجيل الدخول' : 'Login'}
           </button>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
@@ -51,9 +48,8 @@ export default function OrderDetailPage() {
   const StatusIcon = status?.icon ?? Clock;
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10 max-w-3xl">
+    <PageShell>
+      <div className="page-section max-w-3xl mx-auto">
         <button onClick={() => navigate('/orders')}
           className={`flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <ArrowLeft className={`w-4 h-4 ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -202,8 +198,7 @@ export default function OrderDetailPage() {
             </div>
           </div>
         )}
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

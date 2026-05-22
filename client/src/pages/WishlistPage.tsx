@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
 import { Link } from 'wouter';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import ProductCard from '../components/products/ProductCard';
 import { useLocale } from '../context/LocaleContext';
 import { useWishlistStore } from '../lib/store';
@@ -25,9 +24,8 @@ export default function WishlistPage() {
   });
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
+    <PageShell>
+      <div className="page-section">
         <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-8 flex items-center gap-3">
           <Heart className="w-7 h-7 text-red-500 fill-red-500" />
           {locale === 'ar' ? 'المفضلة' : 'Wishlist'}
@@ -51,8 +49,7 @@ export default function WishlistPage() {
             {data?.products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
           </div>
         )}
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

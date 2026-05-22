@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Wallet, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 import { Link } from 'wouter';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice, formatDate, cn } from '../lib/utils';
@@ -20,15 +19,13 @@ export default function WalletPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <PageShell>
+      <div className="page-section">
           <Link href="/auth/login" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold">
             {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
@@ -38,9 +35,8 @@ export default function WalletPage() {
   const walletEnabled = data?.walletEnabled ?? false;
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
+    <PageShell>
+      <div className="page-section">
         <h1 className="text-2xl lg:text-3xl font-black text-foreground mb-8 flex items-center gap-3">
           <Wallet className="w-7 h-7 text-primary" />
           {locale === 'ar' ? 'المحفظة' : 'Wallet'}
@@ -109,8 +105,7 @@ export default function WalletPage() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

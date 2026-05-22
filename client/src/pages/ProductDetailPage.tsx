@@ -4,8 +4,7 @@ import { useParams, useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Star, ArrowLeft, Minus, Plus, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import ProductCard from '../components/products/ProductCard';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
@@ -86,18 +85,23 @@ export default function ProductDetailPage() {
   });
 
   if (isLoading) return (
-    <div className="min-h-screen"><Navbar />
-      <div className="container mx-auto px-4 py-8">
+    <PageShell>
+      <div className="page-section">
         <div className="grid lg:grid-cols-2 gap-8">
           <div className="aspect-square bg-muted rounded-2xl animate-pulse" />
           <div className="space-y-4">{[...Array(5)].map((_, i) => <div key={i} className="h-8 bg-muted rounded-xl animate-pulse" />)}</div>
         </div>
       </div>
-      <Footer />
-    </div>
+    </PageShell>
   );
 
-  if (!product) return <div className="min-h-screen flex items-center justify-center"><p>Product not found</p></div>;
+  if (!product) return (
+    <PageShell>
+      <div className="empty-state min-h-[50vh]">
+        <p className="text-muted-foreground">{locale === 'ar' ? 'المنتج غير موجود' : 'Product not found'}</p>
+      </div>
+    </PageShell>
+  );
 
   const name = locale === 'ar' ? product.nameAr : product.nameEn;
   const description = locale === 'ar' ? product.descriptionAr : product.descriptionEn;
@@ -121,9 +125,8 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
+    <PageShell>
+      <div className="page-section">
         <button onClick={() => navigate('/products')} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6">
           <ArrowLeft className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
           {locale === 'ar' ? 'العودة للمنتجات' : 'Back to Products'}
@@ -253,8 +256,7 @@ export default function ProductDetailPage() {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

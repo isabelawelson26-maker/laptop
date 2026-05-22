@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Loader2, MessageCircle, HeadphonesIcon, RefreshCw } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
+import PageShell from '../components/layout/PageShell';
 import { useLocale } from '../context/LocaleContext';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation } from 'wouter';
@@ -65,24 +64,21 @@ export default function SupportPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 py-20 flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+      <PageShell>
+      <div className="page-section">
           <HeadphonesIcon className="w-16 h-16 text-primary/40" />
           <h2 className="text-xl font-bold">{locale === 'ar' ? 'يجب تسجيل الدخول أولاً' : 'Please sign in first'}</h2>
           <Link href="/auth/login" className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
             {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
           </Link>
-        </main>
-        <Footer />
-      </div>
+        </div>
+    </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="container mx-auto px-4 py-10">
+    <PageShell>
+      <div className="page-section">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -157,8 +153,7 @@ export default function SupportPage() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </PageShell>
   );
 }

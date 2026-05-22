@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useMutation } from '@tanstack/react-query';
-import { Laptop, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { useLocale } from '../../context/LocaleContext';
 import api from '../../lib/api';
 import PhoneInput from '../../components/PhoneInput';
+import AuthLayout from '../../components/layout/AuthLayout';
+import { btnPrimary, inputClass, labelClass } from '../../lib/ui';
+import { cn } from '../../lib/utils';
 
 export default function LoginPage() {
   const { locale } = useLocale();
@@ -27,49 +30,60 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-blue-950 p-4">
-      <div className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-400 rounded-2xl shadow-lg">
-            <Laptop className="w-7 h-7 text-white" />
-          </Link>
-          <h1 className="text-2xl font-black text-foreground">{locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}</h1>
-          <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'أهلاً بك مجدداً!' : 'Welcome back!'}</p>
-        </div>
-
-        <form onSubmit={e => { e.preventDefault(); mutation.mutate(); }} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium">{locale === 'ar' ? 'رقم الهاتف' : 'Phone Number'}</label>
-            <PhoneInput value={phone} onChange={setPhone} required />
-          </div>
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">{locale === 'ar' ? 'كلمة المرور' : 'Password'}</label>
-              <Link href="/auth/forgot-password" className="text-xs text-primary hover:underline">
-                {locale === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
-              </Link>
-            </div>
-            <div className="relative">
-              <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required
-                className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 pe-10" />
-              <button type="button" onClick={() => setShowPass(!showPass)} className="absolute top-3 end-3 text-muted-foreground hover:text-foreground transition-colors">
-                {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-          <button type="submit" disabled={mutation.isPending}
-            className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-60">
-            {mutation.isPending ? (locale === 'ar' ? 'جاري تسجيل الدخول...' : 'Signing in...') : (locale === 'ar' ? 'تسجيل الدخول' : 'Sign In')}
-          </button>
-        </form>
-
+    <AuthLayout
+      title={locale === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
+      subtitle={locale === 'ar' ? 'أهلاً بعودتك! أدخل رقم هاتفك وكلمة المرور للمتابعة.' : 'Welcome back. Enter your phone and password to continue.'}
+      footer={
         <p className="text-center text-sm text-muted-foreground">
           {locale === 'ar' ? 'ليس لديك حساب؟ ' : "Don't have an account? "}
           <Link href="/auth/register" className="text-primary font-semibold hover:underline">
-            {locale === 'ar' ? 'إنشاء حساب' : 'Register'}
+            {locale === 'ar' ? 'إنشاء حساب' : 'Create account'}
           </Link>
         </p>
-      </div>
-    </div>
+      }
+    >
+      <form onSubmit={e => { e.preventDefault(); mutation.mutate(); }} className="space-y-5">
+        <div>
+          <label className={labelClass}>{locale === 'ar' ? 'رقم الهاتف' : 'Phone number'}</label>
+          <PhoneInput value={phone} onChange={setPhone} required />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className={cn(labelClass, 'mb-0')}>{locale === 'ar' ? 'كلمة المرور' : 'Password'}</label>
+            <Link href="/auth/forgot-password" className="text-xs font-medium text-primary hover:underline">
+              {locale === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+            </Link>
+          </div>
+          <div className="relative">
+            <input
+              type={showPass ? 'text' : 'password'}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className={cn(inputClass, 'pe-11')}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute top-1/2 -translate-y-1/2 end-3 p-1 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showPass ? 'Hide password' : 'Show password'}
+            >
+              {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+        <button type="submit" disabled={mutation.isPending} className={cn(btnPrimary, 'w-full btn-lg')}>
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              {locale === 'ar' ? 'جاري تسجيل الدخول...' : 'Signing in...'}
+            </>
+          ) : (
+            locale === 'ar' ? 'تسجيل الدخول' : 'Sign in'
+          )}
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

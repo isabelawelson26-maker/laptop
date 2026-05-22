@@ -37,7 +37,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   const Sidebar = () => (
-    <div className="w-64 bg-card border-e border-border flex flex-col h-full">
+    <div className="admin-sidebar">
       <div className="p-5 border-b border-border">
         <Link href="/" className="flex items-center gap-2">
           <SiteBrand size="sm" nameClassName="text-sm" />
@@ -91,7 +91,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-14 border-b border-border bg-card flex items-center justify-between px-4">
+        <header className="h-14 shrink-0 border-b border-border bg-card/80 backdrop-blur-sm flex items-center justify-between px-4 lg:px-6">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-accent">
             <Menu className="w-4 h-4" />
           </button>

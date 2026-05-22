@@ -87,30 +87,33 @@ export default function PhoneInput({ value, onChange, required, className = '' }
   };
 
   return (
-    <div ref={containerRef} className={`relative flex ${className}`}>
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-3 bg-muted border border-border rounded-s-xl border-e-0 hover:bg-muted/80 transition-colors shrink-0"
-        aria-label={locale === 'ar' ? 'اختر الدولة' : 'Select country'}
-      >
-        <span className="text-lg leading-none">{country.flag}</span>
-        <span className="text-sm font-semibold text-foreground tabular-nums">{country.dial}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
+    <div ref={containerRef} className={`relative ${className}`}>
+      <div className="phone-input-wrap">
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="phone-input-country-btn"
+          aria-label={locale === 'ar' ? 'اختر الدولة' : 'Select country'}
+          aria-expanded={open}
+        >
+          <span className="text-lg leading-none">{country.flag}</span>
+          <span className="text-sm font-semibold text-foreground tabular-nums">{country.dial}</span>
+          <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </button>
 
-      <input
-        type="tel"
-        inputMode="numeric"
-        value={national}
-        onChange={e => setNational(e.target.value.replace(/\D/g, ''))}
-        required={required}
-        placeholder={locale === 'ar' ? '9XX XXX XXX' : '9XX XXX XXX'}
-        className="flex-1 min-w-0 px-4 py-3 bg-muted border border-border rounded-e-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-      />
+        <input
+          type="tel"
+          inputMode="numeric"
+          value={national}
+          onChange={e => setNational(e.target.value.replace(/\D/g, ''))}
+          required={required}
+          placeholder={locale === 'ar' ? '9XX XXX XXX' : '9XX XXX XXX'}
+          className="phone-input-number"
+        />
+      </div>
 
       {open && (
-        <div className="absolute top-full start-0 z-50 mt-1 w-72 bg-card border border-border rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute top-full start-0 z-50 mt-2 w-full min-w-[280px] max-w-[320px] surface-card shadow-xl overflow-hidden">
           <div className="p-2 border-b border-border">
             <div className="relative">
               <Search className="absolute top-2.5 start-3 w-4 h-4 text-muted-foreground" />
@@ -118,7 +121,7 @@ export default function PhoneInput({ value, onChange, required, className = '' }
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder={locale === 'ar' ? 'بحث عن دولة...' : 'Search country...'}
-                className="w-full ps-9 pe-3 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="input-field py-2 ps-9"
               />
             </div>
           </div>

@@ -43,8 +43,6 @@ const features = [
 ];
 
 export default function HeroSection({ banners, locale }: HeroSectionProps) {
-  console.log("HERO WORKING");
-  console.log("BANNERS =", banners);
   const isRTL = locale === 'ar';
   const [current, setCurrent] = useState(0);
 
@@ -72,7 +70,7 @@ export default function HeroSection({ banners, locale }: HeroSectionProps) {
 
   return (
     <section className="relative">
-      <div className="relative h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden rounded-3xl mx-4 lg:mx-8 mt-4 shadow-2xl">
+      <div className="relative h-[58vh] sm:h-[65vh] lg:h-[72vh] min-h-[420px] max-h-[760px] overflow-hidden rounded-2xl sm:rounded-3xl mx-3 sm:mx-4 lg:mx-6 mt-3 sm:mt-4 shadow-2xl ring-1 ring-border/50">
         <AnimatePresence mode="wait">
           <motion.div key={current} initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} className="absolute inset-0">
             <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url(${slide.image})` }} />
@@ -87,10 +85,10 @@ export default function HeroSection({ banners, locale }: HeroSectionProps) {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">{title}</h1>
                 <p className="text-white/80 text-lg leading-relaxed max-w-lg">{subtitle}</p>
                 <div className="flex items-center gap-4 flex-wrap">
-                  <Link href="/products" className="bg-white text-blue-700 px-8 py-3.5 rounded-2xl font-bold text-base hover:bg-blue-50 transition-all shadow-xl active:scale-95">
+                  <Link href="/products" className="inline-flex items-center justify-center bg-white text-primary px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base hover:bg-white/95 transition-all shadow-xl active:scale-[0.98]">
                     {isRTL ? 'تسوق الآن' : 'Shop Now'}
                   </Link>
-                  <Link href="/products" className="bg-white/20 backdrop-blur-sm text-white border border-white/40 px-8 py-3.5 rounded-2xl font-bold hover:bg-white/30 transition-all">
+                  <Link href="/products?offers=true" className="inline-flex items-center justify-center bg-white/15 backdrop-blur-md text-white border border-white/35 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base hover:bg-white/25 transition-all">
                     {isRTL ? 'استكشف العروض' : 'Explore Offers'}
                   </Link>
                 </div>
@@ -121,7 +119,7 @@ export default function HeroSection({ banners, locale }: HeroSectionProps) {
       <div className="container mx-auto px-4 mt-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {features.map((f, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }} className="flex items-center gap-4 bg-card border border-border rounded-2xl p-4 hover:border-primary/30 hover:shadow-lg transition-all">
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }} className="flex items-center gap-4 surface-card-hover p-4 sm:p-5">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                 <f.icon className="w-6 h-6 text-primary" />
               </div>
